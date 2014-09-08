@@ -1,0 +1,10 @@
+<ul>
+<% @posts.each do |post| %>
+  <li>
+    <a href="/posts/<%= post["id"] %>"><%= post["title"] %></a>
+  </li>
+<% end %>
+</ul>
+<br/><br/>
+<a href="/posts/new">Add a post</a>
+<br/><br/>

@@ -1,0 +1,12 @@
+<%= @post["title"] %>
+<br/><br/>
+<%= @post["story"] %>
+<br/><br/>
+<a href="/posts/<%= @post["id"] %>/edit">Edit Post</a>
+<br/><br/>
+<form action="/posts/<%= @post["id"] %>" method="POST">
+  <input type="hidden" name="_method" value="DELETE">
+  <input type="submit" value="Delete post">
+</form>
+<br/><br/>
+

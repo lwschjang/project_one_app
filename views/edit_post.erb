@@ -1,0 +1,9 @@
+<form action="/posts/<%= @post["id"] %>" method="POST">
+  <label for="post_title">title</label>
+  <input type="text" name="title" value="<%= @post["title"] %>" id="title">
+  <br/><br/>
+  <label for="post_story">Story</label>
+  <input type="text" name="story" value="<%= @post["story"] %>" id="story">
+  <input type="hidden" name="_method" value="PUT">
+  <input type="submit" value="Update Post">
+</form>
