@@ -3,7 +3,7 @@ require 'redis'
 require 'json'
 require 'uri'
 require 'pry'
-require 'redis_pagination'
+require 'rss'
 
 class App < Sinatra::Base
 
@@ -17,11 +17,6 @@ class App < Sinatra::Base
     enable :sessions
   end
 
-  RedisPagination.configure do |configuration|
-  configuration.redis = Redis.new
-  configuration.page_size = 10
-  end
-  
   before do
     logger.info "Request Headers: #{headers}"
     logger.warn "Params: #{params}"
@@ -55,6 +50,10 @@ class App < Sinatra::Base
     #JSON turns data into a hash then it gets mapped into an array
     @posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
     render(:erb, :index)
+  end
+
+  get("/posts?first=11)") do
+    paginate = []
   end
 
   # POST /posts
@@ -103,6 +102,14 @@ class App < Sinatra::Base
     id = params[:id]
     $redis.del("posts:#{id}")
     redirect to("/posts")
+  end
+
+  # GET RSS Feed
+  get("/rss") do
+    rss = RSS::Parser.parse('http://localhost.com.rss', false)
+    rss.items.each do |item|
+      puts "#{item.pubDate} - #{item.title}"
+    end    
   end
 
   # get("/posts/:id/comments") do
