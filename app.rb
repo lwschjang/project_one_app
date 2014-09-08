@@ -26,6 +26,7 @@ class App < Sinatra::Base
     logger.info "Response Headers: #{response.headers}"
   end
 
+
   ########################
   # DB Configuration
   ########################
@@ -106,10 +107,15 @@ class App < Sinatra::Base
 
   # GET RSS Feed
   get("/rss") do
-    rss = RSS::Parser.parse('http://localhost.com.rss', false)
+    rss = RSS::Parser.parse('localhost:9393.rss', false)
     rss.items.each do |item|
       puts "#{item.pubDate} - #{item.title}"
     end    
+  end
+
+  # GET JSON Feed
+  get("/as/:id") do
+  
   end
 
   # get("/posts/:id/comments") do
