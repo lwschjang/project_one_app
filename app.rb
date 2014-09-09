@@ -4,6 +4,7 @@ require 'json'
 require 'uri'
 require 'pry'
 require 'rss'
+require 'redistogo'
 # require 'httparty'     # For our server requests
 # require 'securerandom' # To generate random strings for the state variable to prevent CSRF
 
