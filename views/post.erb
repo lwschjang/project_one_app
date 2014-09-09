@@ -2,6 +2,8 @@
 <br/><br/>
 <%= @post["story"] %>
 <br/><br/>
+<%= @post["hashtags"] %>
+<br/><br/>
 <a href="/posts/<%= @post["id"] %>/edit">Edit Post</a>
 <br/><br/>
 <form action="/posts/<%= @post["id"] %>" method="POST">

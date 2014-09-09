@@ -64,8 +64,9 @@ class App < Sinatra::Base
   post("/posts") do
     title = params[:title]
     story = params[:story]
+    hashtags = params[:hashtags]
     index = $redis.incr("post:index")
-    post = { title: title, story: story, id: index }
+    post = { title: title, story: story, hashtags: hashtags, id: index }
     $redis.set("posts:#{index}", post.to_json)
     redirect to("/posts")
   end
@@ -95,8 +96,9 @@ class App < Sinatra::Base
   put("/posts/:id") do
     title = params[:title]
     story = params[:story]
+    hashtags = params[:hashtags]
     id = params[:id]
-    updated_post = { title: title, story: story, id: id }
+    updated_post = { title: title, story: story, hashtags: hashtags, id: id }
     $redis.set("posts:#{id}", updated_post.to_json)
     redirect to("/posts/#{id}")
   end
@@ -110,23 +112,41 @@ class App < Sinatra::Base
 
   # GET RSS Feed
   get("/rss/:id") do
-    title = params[:title]
     id = params[:id]
+
+    post     = JSON.parse $redis.get("posts:#{id}")
+    title    = post["title"]
+    story    = post["story"]
+    hashtags = post["hashtags"]
+
     rss = RSS::Maker.make("atom") do |maker|
       maker.channel.author = "Will Schjang"
       maker.channel.updated = Time.now.to_s
-      maker.channel.about = "localhost:9393.rss"
+      maker.channel.about = "localhost:9393/rss"
       maker.channel.title = "Project Feed"
 
       maker.items.new_item do |item|
-        item.link = "/posts/#{id}"
+        item.link = "#{id}"
         item.title = "#{title}"
         item.updated = Time.now.to_s
       end
     end
 
-    puts rss    
+    puts rss   
+
+    @rss = rss
+    render(:erb, @rss.to_s) 
   end
+
+  get('/hashtags/:hashtag') do
+    @hashtag = params[:hashtag]
+    @posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
+    @with_tagname_array = @posts.select do |post_entry|
+      post_entry["hashtags"].split(", ").include?"#{@hashtag}"
+    end
+    render(:erb, :hashtags)
+  end
+
 
   # client = OAuth2::Client.new(
   #   APP_ID,
@@ -141,47 +161,18 @@ class App < Sinatra::Base
   # OAuth2::AccessToken.new(client, token.token, {:mode => :query, :param_name =>"oauth_token"})
 
 
-  # rss = RSS::Maker.make("atom") do |maker|
-  #     maker.channel.author = "Will Schjang"
-  #     maker.channel.updated = Time.now.to_s
-  #     maker.channel.about = "/.rss"
-  #     maker.channel.title = "Project Feed"
-
-  #     maker.items.new_item do |item|
-  #       item.link = "/posts#{:id}"
-  #       item.title = "posts#{:title}"
-  #       item.updated = Time.now.to_s
-  #     end
-  #   end
-
-  #   puts rss   
-
-  # GET JSON Feed
+ # GET JSON Feed
   get("/as/:id") do
-  
+    id = params[:id]
+    
+    post     = JSON.parse $redis.get("posts:#{id}")
+    title    = post["title"]
+    story    = post["story"]
+    hashtags = post["hashtags"]
+    
+    content_type :json
+      { title: title, story: story, hashtags: hashtags, id: id }.to_json
   end
 
-  # get("/posts/:id/comments") do
-  #   #communicates with redis in order to pull the posts onto the app
-  #   #JSON turns data into a hash then it gets mapped into an array
-  #   @comments = $redis.keys("*comments*").map { |comment| JSON.parse($redis.get(comment)) }
-  #   render(:erb, :_comments)
-  # end
-
-  # post("/posts/:id/comments") do
-  #   commentor_name = params[:commentor_name]
-  #   comment = params[:comment]
-  #   index = $redis.incr("comment:index")
-  #   user_comment = { commentor_name: commentor_name, comment: comment, id: index }
-  #   $redis.set("comments:#{id}", user_comment.to_json)
-  #   redirect to("/posts/#{id}")
-  # end
-
-  # get("/posts/:id/comments:id") do
-  #   id = params[:id]
-  #   raw_comment = $redis.get("comments:#{id}")
-  #   @comment = JSON.parse(raw_comment)
-  #   render(:erb, :_comments)
-  # end
-
+  
 end

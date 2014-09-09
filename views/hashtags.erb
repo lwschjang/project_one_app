@@ -1,0 +1,8 @@
+<ul>
+<% @with_tagname_array.each do |post| %>
+  <li>
+    <a href="/posts/<%= post["id"] %>"><%= post["title"] %></a>
+  </li>
+<% end %>
+</ul>
+<br/><br/>

@@ -1,0 +1,29 @@
+html {
+	background-image: url(http://www.sportsonearth.com/assets/images/9/2/8/64418928/cuts/1980x1100_SOE_NFL_Tanier_wk14riffs_d0ikjyr4_10w479bd.jpg);
+	background-size: cover;
+}
+body {
+    max-width: 1000px;
+    font-size: 20px;
+	font-family: 'Lato', serif;
+	background-color: rgba(0, 0, 0, 0.85);
+	color: red;
+	border-radius: 25px;
+	box-shadow:inset 0px 0px 24px #000000;
+	padding: 15px;
+	margin: 0 auto;
+	margin-top: 55px;
+}
+
+#logo {
+	margin-left: 42.5%;
+	height: 250px;
+}
+
+ul {
+	text-align: center;
+}
+
+li {
+	list-style: none;
+}
