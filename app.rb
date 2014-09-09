@@ -2,7 +2,7 @@ require 'sinatra/base'
 require 'redis'
 require 'json'
 require 'uri'
-require 'pry'
+# require 'pry'
 require 'rss'
 require 'redistogo'
 # require 'httparty'     # For our server requests
