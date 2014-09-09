@@ -4,6 +4,8 @@ require 'json'
 require 'uri'
 require 'pry'
 require 'rss'
+# require 'httparty'     # For our server requests
+# require 'securerandom' # To generate random strings for the state variable to prevent CSRF
 
 class App < Sinatra::Base
 
@@ -25,7 +27,9 @@ class App < Sinatra::Base
   after do
     logger.info "Response Headers: #{response.headers}"
   end
-
+  
+  # set the secret yourself, so all your application instances share it:
+  # set :session_secret, 'super secret'
 
   ########################
   # DB Configuration
@@ -34,7 +38,7 @@ class App < Sinatra::Base
   $redis = Redis.new({:host => uri.host,
                       :port => uri.port,
                       :password => uri.password})
-
+  # $redis.flushdb
 
   ########################
   # Routes
@@ -47,15 +51,14 @@ class App < Sinatra::Base
 
   # GET Posts
   get("/posts") do
-    #communicates with redis in order to pull the posts onto the app
-    #JSON turns data into a hash then it gets mapped into an array
-    @posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
+    id = params["first"].to_i || 0
+    posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
+    # subset
+    @posts = posts[id,10]
+    @posts.sort_by! {|hash| hash["id"] }
     render(:erb, :index)
   end
 
-  get("/posts?first=11)") do
-    paginate = []
-  end
 
   # POST /posts
   post("/posts") do
@@ -106,12 +109,52 @@ class App < Sinatra::Base
   end
 
   # GET RSS Feed
-  get("/rss") do
-    rss = RSS::Parser.parse('localhost:9393.rss', false)
-    rss.items.each do |item|
-      puts "#{item.pubDate} - #{item.title}"
-    end    
+  get("/rss/:id") do
+    title = params[:title]
+    id = params[:id]
+    rss = RSS::Maker.make("atom") do |maker|
+      maker.channel.author = "Will Schjang"
+      maker.channel.updated = Time.now.to_s
+      maker.channel.about = "localhost:9393.rss"
+      maker.channel.title = "Project Feed"
+
+      maker.items.new_item do |item|
+        item.link = "/posts/#{id}"
+        item.title = "#{title}"
+        item.updated = Time.now.to_s
+      end
+    end
+
+    puts rss    
   end
+
+  # client = OAuth2::Client.new(
+  #   APP_ID,
+  #   SECRET_ID,
+  #   :authorize_url => "/dialog/oauth",
+  #   :token_url => "/oauth/access_token",
+  #   :site => "https://www.facebook.com/"
+  # )
+
+  # code = client.auth_code.authorize_url(:redirect_uri => "http://www.facebook.com/")
+  # token = client.auth_code.get_token(code, :redirect_uri => "https://graph.facebook.com/")
+  # OAuth2::AccessToken.new(client, token.token, {:mode => :query, :param_name =>"oauth_token"})
+
+
+  # rss = RSS::Maker.make("atom") do |maker|
+  #     maker.channel.author = "Will Schjang"
+  #     maker.channel.updated = Time.now.to_s
+  #     maker.channel.about = "/.rss"
+  #     maker.channel.title = "Project Feed"
+
+  #     maker.items.new_item do |item|
+  #       item.link = "/posts#{:id}"
+  #       item.title = "posts#{:title}"
+  #       item.updated = Time.now.to_s
+  #     end
+  #   end
+
+  #   puts rss   
 
   # GET JSON Feed
   get("/as/:id") do

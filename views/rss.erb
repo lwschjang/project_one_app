@@ -1,0 +1,15 @@
+<%=  rss = RSS::Maker.make("atom") do |maker|
+      maker.channel.author = "Will Schjang"
+      maker.channel.updated = Time.now.to_s
+      maker.channel.about = "localhost:9393.rss"
+      maker.channel.title = "Project Feed"
+
+      maker.items.new_item do |item|
+        item.link = "#{id}"
+        item.title = "#{title}"
+        item.updated = Time.now.to_s
+      end
+    end
+
+    puts rss  
+    redirect to("/rss") %>

@@ -9,9 +9,14 @@ GEM
       xpath (~> 2.0)
     coderay (1.1.0)
     diff-lcs (1.2.5)
+    httparty (0.13.1)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.1)
     method_source (0.8.2)
     mime-types (2.3)
     mini_portile (0.6.0)
+    multi_xml (0.5.5)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
     pry (0.10.1)
@@ -24,8 +29,6 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     redis (3.1.0)
-    redis_pagination (1.2.0)
-      redis
     rspec (3.0.0)
       rspec-core (~> 3.0.0)
       rspec-expectations (~> 3.0.0)
@@ -54,9 +57,9 @@ PLATFORMS
 
 DEPENDENCIES
   capybara (~> 2.4.1)
+  httparty
   pry
   redis (= 3.1.0)
-  redis_pagination
   rspec (~> 3.0.0)
   shotgun
   sinatra (= 1.4.5)
