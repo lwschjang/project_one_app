@@ -27,4 +27,8 @@ ul {
 li {
 	list-style: none;
 	line-height: 40px;
+	background-color: darkgray;
+	border-radius: 50px;
+	margin-bottom: 10px;
+	border:double 5px #000000;
 }
