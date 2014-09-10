@@ -47,11 +47,6 @@ class App < Sinatra::Base
 
   get('/') do
     #points the user directly to the posts 
-    puts "==================="
-    puts "==================="
-    puts "Inside of gets /"
-    puts "==================="
-    puts "==================="
     redirect to("/posts")
   end
 
@@ -61,11 +56,6 @@ class App < Sinatra::Base
     posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
     # subset
     @posts = posts[id,10]
-    puts "==================="
-    puts "==================="
-    puts @posts
-    puts "==================="
-    puts "==================="
     @posts.sort_by! {|hash| hash["id"] }
     render(:erb, :index)
   end
