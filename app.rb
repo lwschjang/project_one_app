@@ -47,16 +47,16 @@ class App < Sinatra::Base
 
   get('/') do
     #points the user directly to the posts 
+    puts "==================="
+    puts "==================="
+    puts "Inside of gets /"
+    puts "==================="
+    puts "==================="
     redirect to("/posts")
   end
 
   # GET Posts
   get("/posts") do
-    puts "==================="
-    puts "==================="
-    puts "Inside of gets /posts"
-    puts "==================="
-    puts "==================="
     id = params["first"].to_i || 0
     posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
     # subset
