@@ -12,7 +12,7 @@ body {
 	box-shadow:inset 0px 0px 24px #000000;
 	padding: 15px;
 	margin: 0 auto;
-	margin-top: 55px;
+	margin-top: 45px;
 }
 
 #logo {
@@ -26,5 +26,5 @@ ul {
 
 li {
 	list-style: none;
-	line-height: 50px;
+	line-height: 40px;
 }
