@@ -5,7 +5,6 @@ html {
 body {
     max-width: 1000px;
     font-size: 20px;
-	font-family: 'Lato', serif;
 	background-color: rgba(0, 0, 0, 0.85);
 	color: red;
 	border-radius: 25px;
@@ -32,3 +31,4 @@ li {
 	margin-bottom: 10px;
 	border:double 5px #000000;
 }
+
