@@ -52,10 +52,20 @@ class App < Sinatra::Base
 
   # GET Posts
   get("/posts") do
+    puts "==================="
+    puts "==================="
+    puts "Inside of gets /posts"
+    puts "==================="
+    puts "==================="
     id = params["first"].to_i || 0
     posts = $redis.keys("*posts*").map { |post| JSON.parse($redis.get(post)) }
     # subset
     @posts = posts[id,10]
+    puts "==================="
+    puts "==================="
+    puts @posts
+    puts "==================="
+    puts "==================="
     @posts.sort_by! {|hash| hash["id"] }
     render(:erb, :index)
   end
